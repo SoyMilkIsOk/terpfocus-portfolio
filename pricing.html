@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="/favicon/favicon.ico" />
+  <link href="css/styles.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;800&display=swap" rel="stylesheet">
+  <title>Cannabis Photography by TerpFocus</title>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            btnGreen: '#00c96b',
+            bgBlue: "#219cc8",
+          },
+          fontFamily: {
+            open: ['"Open Sans"', 'sans-serif'],
+            libre: ['"Libre Baskerville"', 'serif'],
+            raleway: ['"Raleway"', 'sans-serif'],
+          },
+          boxShadow: {
+            '10xl': '0 0 30px 30px rgba(255, 255, 255, 0.05)',
+          },
+          backgroundImage: {
+            // image to use as a background
+            'bgImg': 'url("images/bg.png")',
+          },
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="font-raleway bg-[url('/images/bg.png')] bg-cover bg-center bg-fixed">
+
+  <div class="relative flex min-h-screen flex-col justify-center overflow-hidden py-6">
+    <header>
+      <div class="absolute top-0 nav flex justify-center w-full mx-auto py-4 bg-black bg-opacity-50">
+        <ul class="flex flex-row font-raleway uppercase font-bold text-white tracking-widest">
+          <li class="px-6 "><a href="/" class="decoration-none hover:text-btnGreen">HOME</a></li>
+          <li class="px-6"> <a href="pricing.html" class="decoration-none hover:text-btnGreen">PRICING</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <div class="relative w-full my-5 bg-black bg-opacity-50 py-6">
+      <div class="banner justify-center m-auto flex flex-col text-center p-6 sm:px-12 w-4/5 backgrop-blur-sm">
+        <h1 class="font-raleway text-white drop-shadow-lg font-black text-5xl sm:text-8xl">
+          Pricing
+        </h1>
+        <ul class="font-raleway text-white drop-shadow-lg mt-4 text-lg sm:text-xl w-3/2 mx-auto sm:w-3/4">
+          <li class="py-2">Starting at $200 per strain</li>
+          <li class="py-2">5-6 pictures per strain (top profiles & nug macros)</li>
+          <li class="py-2">Bulk discount available</li>
+          <a href="https://calendly.com/terps-terpmetrix/quote-call" target="_blank">
+            <button
+              class="bg-btnGreen text-white font-bold w-fit py-2 px-4 mt-8 mx-auto rounded-full hover:bg-btnGreendark text-2xl uppercase"
+              href='https://calendly.com/terps-terpmetrix/quote-call'>
+              Get A Quote
+            </button>
+          </a>
+      </div>
+      <footer>
+        <div
+          class="justify-center mt-8 absolute bottom-0 w-full mx-auto py-2 bg-black bg-opacity-50 text-sm text-center">
+          <p class="text-white">Copyright © 2024 TerpFocus. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+</body>
+
+</html>

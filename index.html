@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="/favicon/favicon.ico" />
+  <link href="css/styles.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;800&display=swap" rel="stylesheet">
+  <title>Cannabis Photography by TerpFocus</title>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            btnGreen: '#00c96b',
+            btnGreendark: '#007a41',
+          },
+          fontFamily: {
+            open: ['"Open Sans"', 'sans-serif'],
+            libre: ['"Libre Baskerville"', 'serif'],
+            raleway: ['"Raleway"', 'sans-serif'],
+          },
+          boxShadow: {
+            '10xl': '0 0 30px 30px rgba(255, 255, 255, 0.05)',
+          },
+          backgroundImage: {
+            // image to use as a background
+            'bgImg': 'url("images/bg.png")',
+          },
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="font-raleway bg-[url('/images/bg.png')] bg-cover bg-center bg-fixed">
+
+  <div class="relative flex min-h-screen flex-col justify-center overflow-hidden py-6">
+    <header>
+      <div class="absolute top-0 nav flex justify-center w-full mx-auto py-4 bg-black bg-opacity-50">
+        <ul class="flex flex-row font-raleway uppercase font-bold text-white tracking-widest">
+          <li class="px-6 "><a href="/" class="decoration-none hover:text-btnGreen">HOME</a></li>
+          <li class="px-6"> <a href="pricing.html" class="decoration-none hover:text-btnGreen">PRICING</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <div class="relative w-full my-5 bg-black bg-opacity-50 py-6">
+      <div class="banner justify-center m-auto flex flex-col text-center p-6 sm:px-12 w-4/5 backgrop-blur-sm">
+        <h1 class="font-raleway text-white drop-shadow-lg font-black text-5xl sm:text-8xl">
+          TerpFocus
+        </h1>
+        <h3 class="font-raleway text-white drop-shadow-lg mt-4 text-lg sm:text-xl w-3/2 mx-auto sm:w-3/4 uppercase">
+          Cannabis Photography
+        </h3>
+        <a href="https://calendly.com/terps-terpmetrix/quote-call" target="_blank">
+          <button
+            class="bg-btnGreen text-white font-bold w-fit py-2 px-4 mt-8 mx-auto rounded-full hover:bg-btnGreendark text-2xl uppercase"
+            href='https://calendly.com/terps-terpmetrix/quote-call'>
+            Get A Quote
+          </button>
+        </a>
+        <div class="flex flex-row justify-center mt-8">
+          <div class="px-6 sm:px-10">
+            <a href="https://twitter.com/terpfocus" target="_blank">
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50"
+                class="w-8 h-8 fill-white hover:fill-btnGreen">
+                <path
+                  d="M 5.9199219 6 L 20.582031 27.375 L 6.2304688 44 L 9.4101562 44 L 21.986328 29.421875 L 31.986328 44 L 44 44 L 28.681641 21.669922 L 42.199219 6 L 39.029297 6 L 27.275391 19.617188 L 17.933594 6 L 5.9199219 6 z M 9.7167969 8 L 16.880859 8 L 40.203125 42 L 33.039062 42 L 9.7167969 8 z">
+                </path>
+              </svg>
+            </a>
+          </div>
+          <div class="px-6 sm:px-10">
+            <a href="https://instagram.com/terpfocus" target="_blank">
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 30 30"
+                class="w-9 h-9 fill-white hover:fill-btnGreen">
+                <path
+                  d="M 9.9980469 3 C 6.1390469 3 3 6.1419531 3 10.001953 L 3 20.001953 C 3 23.860953 6.1419531 27 10.001953 27 L 20.001953 27 C 23.860953 27 27 23.858047 27 19.998047 L 27 9.9980469 C 27 6.1390469 23.858047 3 19.998047 3 L 9.9980469 3 z M 22 7 C 22.552 7 23 7.448 23 8 C 23 8.552 22.552 9 22 9 C 21.448 9 21 8.552 21 8 C 21 7.448 21.448 7 22 7 z M 15 9 C 18.309 9 21 11.691 21 15 C 21 18.309 18.309 21 15 21 C 11.691 21 9 18.309 9 15 C 9 11.691 11.691 9 15 9 z M 15 11 A 4 4 0 0 0 11 15 A 4 4 0 0 0 15 19 A 4 4 0 0 0 19 15 A 4 4 0 0 0 15 11 z">
+                </path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="justify-center mt-8 absolute bottom-0 w-full mx-auto py-2 bg-black bg-opacity-50 text-sm text-center">
+        <p class="text-white">Copyright © 2024 TerpFocus. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>
