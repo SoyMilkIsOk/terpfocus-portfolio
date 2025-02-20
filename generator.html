@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Card Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for color input */
+        input[type="color"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px; /* Smaller size */
+            height: 30px;
+            padding: 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 5px;
+        }
+        /* Custom styles for drag and drop */
+        .drag-drop-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .drag-drop-area.dragover {
+            border-color: #4285f4;
+            background-color: #f0f4ff;
+        }
+    </style>
+</head>
+<body class="font-sans max-w-[800px] mx-auto p-5">
+    <div class="generator bg-gray-100 p-5 rounded-md mb-5">
+        <h2 class="text-2xl mb-4">Business Card Generator</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+                <label for="businessName" class="block mb-1">Business Name:</label>
+                <input type="text" id="businessName" placeholder="Enter business name" class="p-2 w-full border rounded">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block mb-1">Locations:</label>
+                <div id="locations" class="space-y-2">
+                    <div class="location-group grid grid-cols-11 gap-2 items-center">
+                        <input type="text" class="location-input p-2 w-full border rounded col-span-5" placeholder="Enter location">
+                        <input type="text" class="hours-input p-2 w-full border rounded col-span-5" placeholder="Enter hours">
+                        <button onclick="addLocation()" class="add-location bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-700 col-span-1">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+            <div class="flex items-center gap-2 w-3/4">
+                <label for="logo" class="block whitespace-nowrap">Upload Logo:</label>
+                <div id="dropZone" class="drag-drop-area w-full p-4 rounded-md border-dashed border-2 border-gray-300 hover:border-blue-500">
+                    <input type="file" id="logo" accept="image/*" class="hidden">
+                    <p class="text-gray-500">Drag & drop an image here or click to select</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-1/4">
+                <label for="colorPicker" class="block whitespace-nowrap">Card Color:</label>
+                <input type="color" id="colorPicker" value="#4285f4">
+            </div>
+        </div>
+        <button onclick="generateCard()" class="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 w-full md:w-auto">Generate Business Card</button>
+    </div>
+
+    <div class="card-preview w-[400px] min-h-[250px] mx-auto p-5 rounded-lg text-white transition-colors shadow-md" id="cardPreview">
+        <h1 id="cardName" class="text-2xl mb-2">Your Business Name</h1>
+        <img id="previewLogo" class="max-w-[100px] max-h-[100px] my-2" style="display: none;">
+        <div id="previewLocations">
+            <p>Location: Your Location</p>
+            <p>Hours: Your Hours</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
