@@ -3,32 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Card Generator</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Canna-Site Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for color input */
         input[type="color"] {
             -webkit-appearance: none;
             appearance: none;
-            width: 30px; /* Smaller size */
-            height: 30px;
+            width: 25px;
+            height: 25px;
             padding: 0;
-            border: none;
+            border: 2px solid #fff;
             border-radius: 5px;
             cursor: pointer;
+            background-clip: content-box;
+            margin-right: 1rem;
         }
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-        input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 5px;
-        }
-        /* Custom styles for drag and drop */
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
         .drag-drop-area {
             border: 2px dashed #ccc;
-            padding: 20px;
+            padding: 5px 10px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -37,49 +31,225 @@
             border-color: #4285f4;
             background-color: #f0f4ff;
         }
+        .header-controls {
+            background-color: #e5e7eb;
+            padding: 1rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            border-radius: 0 0 0.5rem 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .preview-line {
+            border-bottom: 2px dashed #9ca3af;
+            border-spacing: 10px;
+            margin: 1rem 0;
+            position: relative;
+            top: 17rem;
+        }
+        .preview-pane {
+            background-color: #f0f0f0;
+            padding: 1rem;
+            min-height: 100vh;
+            margin-top: 18rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .location-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+            margin-bottom: 0.5rem; 
+            flex-wrap: wrap;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 105px;
+            height: 34px;
+        }
+        .toggle-switch input { display: none; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: transparent;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: #000;
+            font-size: 12px;
+            overflow: hidden;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 46px;
+            left: 2px;
+            bottom: 2px;
+            background-color: rgba(255, 255, 255, 0);
+            border: #000 solid 2px;
+            transition: .4s;
+            border-radius: 4px;
+            z-index: 1;
+        }
+        input:checked + .slider:before { transform: translateX(50px); }
+        .slider-text {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+            z-index: 0;
+        }
+        .inactive-text { color: #999; }
+        .logo-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 10px auto;
+            display: block;
+        }
+        .social-icons { 
+            text-align: center; 
+            margin-bottom: 10px; 
+        }
+        .social-icons img { 
+            width: 24px; 
+            height: 24px; 
+            margin: 0 5px; 
+        }
+        .shop-now-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            margin: 10px auto 0;
+            text-align: center; /* Centered text */
+        }
+        /* Mobile responsiveness */
+        @media (max-width: 640px) {
+            .header-controls {
+                grid-template-columns: 1fr; /* Single column on mobile */
+                position: static; /* Remove absolute positioning */
+            }
+            .preview-line {
+                position: static;
+                margin-top: 1rem;
+            }
+            .preview-pane {
+                margin-top: 0; /* Reset margin */
+                padding-top: 0;
+                align-items: center; /* Center card vertically */
+                background-size: contain;
+                background-position: center;
+            }
+            .location-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .location-group input {
+                width: 100%;
+            }
+            .location-group button {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            .card-preview {
+                width: 90%;
+                max-width: 400px;
+            }
+        }
     </style>
 </head>
-<body class="font-sans max-w-[800px] mx-auto p-5">
-    <div class="generator bg-gray-100 p-5 rounded-md mb-5">
-        <h2 class="text-2xl mb-4">Business Card Generator</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-                <label for="businessName" class="block mb-1">Business Name:</label>
-                <input type="text" id="businessName" placeholder="Enter business name" class="p-2 w-full border rounded">
-            </div>
-            <div class="md:col-span-2">
-                <label class="block mb-1">Locations:</label>
-                <div id="locations" class="space-y-2">
-                    <div class="location-group grid grid-cols-11 gap-2 items-center">
-                        <input type="text" class="location-input p-2 w-full border rounded col-span-5" placeholder="Enter location">
-                        <input type="text" class="hours-input p-2 w-full border rounded col-span-5" placeholder="Enter hours">
-                        <button onclick="addLocation()" class="add-location bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-700 col-span-1">+</button>
+<body class="font-sans mx-auto p-5">
+    <div class="generator max-w-full">
+        <div class="header-controls">
+            <!-- Column 1: Business Info -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <label for="businessName" class="whitespace-nowrap">Name:</label>
+                    <input type="text" id="businessName" placeholder="Business name" class="p-2 border rounded w-full">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="logo" class="whitespace-nowrap">Logo:</label>
+                    <div id="dropZoneLogo" class="drag-drop-area w-full">
+                        <input type="file" id="logo" accept="image/*" class="hidden">
+                        <p class="text-gray-500 text-sm">Drop/click for logo</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="instagram" class="whitespace-nowrap">Instagram Username:</label>
+                    <input type="text" id="instagram" placeholder="Username" class="p-2 border rounded w-full">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="weedmaps" class="whitespace-nowrap">Weedmaps Menu URL:</label>
+                    <input type="text" id="weedmaps" placeholder="Menu URL" class="p-2 border rounded w-full">
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <label for="fgColor" class="whitespace-nowrap">Text:</label>
+                    <input type="color" id="fgColor" value="#000000" class="w-10">
+                    <label for="cardColor" class="whitespace-nowrap">Card:</label>
+                    <input type="color" id="cardColor" value="#ffffff" class="w-10">
+                    <label for="buttonColor" class="whitespace-nowrap">Button:</label>
+                    <input type="color" id="buttonColor" value="#4285f4" class="w-10">
+                    <label class="whitespace-nowrap">Background:</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="bgToggle">
+                        <span class="slider">
+                            <div class="slider-text">
+                                <span id="colorText">Color</span>
+                                <span id="imageText" class="inactive-text">Image</span>
+                            </div>
+                        </span>
+                    </label>
+                    <div id="bgColorInput" class="flex items-center gap-2">
+                        <input type="color" id="bgColor" value="#f0f0f0" class="w-10">
+                    </div>
+                    <div id="bgImageInput" class="flex items-center gap-2 hidden">
+                        <div id="dropZoneBg" class="drag-drop-area">
+                            <input type="file" id="bgImage" accept="image/*" class="hidden">
+                            <p class="text-gray-500 text-sm">Drop/click</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-            <div class="flex items-center gap-2 w-3/4">
-                <label for="logo" class="block whitespace-nowrap">Upload Logo:</label>
-                <div id="dropZone" class="drag-drop-area w-full p-4 rounded-md border-dashed border-2 border-gray-300 hover:border-blue-500">
-                    <input type="file" id="logo" accept="image/*" class="hidden">
-                    <p class="text-gray-500">Drag & drop an image here or click to select</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2 w-1/4">
-                <label for="colorPicker" class="block whitespace-nowrap">Card Color:</label>
-                <input type="color" id="colorPicker" value="#4285f4">
-            </div>
-        </div>
-        <button onclick="generateCard()" class="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 w-full md:w-auto">Generate Business Card</button>
-    </div>
 
-    <div class="card-preview w-[400px] min-h-[250px] mx-auto p-5 rounded-lg text-white transition-colors shadow-md" id="cardPreview">
-        <h1 id="cardName" class="text-2xl mb-2">Your Business Name</h1>
-        <img id="previewLogo" class="max-w-[100px] max-h-[100px] my-2" style="display: none;">
-        <div id="previewLocations">
-            <p>Location: Your Location</p>
-            <p>Hours: Your Hours</p>
+            <!-- Column 2: Locations -->
+            <div class="space-y-2">
+                <p>Locations:</p>
+                <div id="locations">
+                    <div class="location-group">
+                        <input type="text" class="location-input p-2 border rounded w-1/4" placeholder="Location">
+                        <input type="text" class="hours-input p-2 border rounded w-1/4" placeholder="Hours">
+                        <input type="text" class="phone-input p-2 border rounded w-1/4" placeholder="Phone">
+                        <button onclick="addLocation()" class="add-location bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-700">+</button>
+                    </div>
+                </div>
+                <button onclick="generateCard()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mt-4">Preview</button>
+            </div>
+        </div>
+        <div class="preview-line"></div>
+        <div class="preview-pane">
+            <div class="card-preview w-[400px] min-h-[250px] p-5 rounded-lg shadow-md" id="cardPreview">
+                <img id="previewLogo" class="logo-placeholder" src="https://placehold.co/100x100" style="border: 2px solid #000000;">
+                <div id="socialIcons" class="social-icons"></div>
+                <h1 id="cardName" class="text-2xl mb-2 text-center">Your Business Name</h1>
+                <div id="previewLocations" class="flex justify-between"></div>
+                <div id="shopNowContainer"></div>
+            </div>
         </div>
     </div>
 
