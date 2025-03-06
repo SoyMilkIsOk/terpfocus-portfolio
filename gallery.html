@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="/favicon/favicon.ico" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Gallery | Cannabis Photography by TerpFocus</title>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              btnGreen: "#00c96b",
+              btnGreendark: "#555857",
+            },
+            fontFamily: {
+              open: ['"Open Sans"', "sans-serif"],
+              libre: ['"Libre Baskerville"', "serif"],
+              raleway: ['"Raleway"', "sans-serif"],
+            },
+            boxShadow: {
+              "10xl": "0 0 30px 30px rgba(255, 255, 255, 0.05)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .gallery-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .gallery {
+        position: relative;
+        height: 60vh;
+        overflow: hidden;
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      .gallery-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        z-index: 0;
+        will-change: opacity, transform;
+      }
+      .gallery-slide.active {
+        opacity: 1;
+        z-index: 1;
+        pointer-events: auto;
+      }
+      .gallery-slide img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+      }
+      .gallery-nav {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      @media (max-width: 640px) {
+        .gallery-nav {
+          display: none;
+        }
+      }
+
+      .gallery-dot {
+        width: 12px;
+        height: 12px;
+        flex: 0 0 auto; /* Fixes the stretching issue */
+        aspect-ratio: 1 / 1; /* Ensures a perfect circle */
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        margin: 0 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+      .gallery-dot.active {
+        background-color: #00c96b;
+        transform: scale(1.2);
+      }
+      .gallery-prev,
+      .gallery-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 2;
+        transition: background-color 0.3s ease;
+      }
+      .gallery-prev:hover,
+      .gallery-next:hover {
+        background-color: #00c96b;
+      }
+      .gallery-prev {
+        left: 20px;
+      }
+      .gallery-next {
+        right: 20px;
+      }
+      /* Thumbnail container left aligned */
+      .thumbnail-container {
+        display: flex;
+        justify-content: flex-start;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 10px 10px;
+        scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: #00c96b rgba(255, 255, 255, 0.1);
+      }
+      .thumbnail-container::-webkit-scrollbar {
+        height: 8px;
+      }
+      .thumbnail-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+      .thumbnail-container::-webkit-scrollbar-thumb {
+        background-color: #00c96b;
+        border-radius: 4px;
+      }
+      .thumbnail {
+        min-width: 80px;
+        height: 60px;
+        border-radius: 4px;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        object-fit: cover;
+        will-change: opacity, transform;
+      }
+      .thumbnail:hover {
+        opacity: 0.8;
+        transform: scale(1.05);
+      }
+      .thumbnail.active {
+        opacity: 1;
+        border: 2px solid #00c96b;
+        transform: scale(1.05);
+      }
+      .gallery-category {
+        cursor: pointer;
+        padding: 8px 16px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        font-weight: bold;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: white;
+      }
+      .gallery-category.active {
+        background-color: #00c96b;
+        color: white;
+      }
+      .gallery-category:hover:not(.active) {
+        opacity: 0.8;
+      }
+      /* Image info overlay */
+      .image-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        text-align: center;
+      }
+      .gallery-slide.active:hover .image-info {
+        opacity: 1;
+      }
+      /* Preloader for images */
+      .preloader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0, 201, 107, 0.2);
+        border-radius: 50%;
+        border-top-color: #00c96b;
+        animation: spin 1s ease-in-out infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        transition: opacity 0.3s ease;
+      }
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="font-raleway bg-black bg-cover bg-center bg-fixed">
+    <div
+      class="relative flex min-h-screen flex-col justify-center overflow-hidden py-6"
+    >
+      <header>
+        <div
+          class="absolute top-0 nav flex justify-center w-full mx-auto py-4 bg-black bg-opacity-50"
+        >
+          <ul
+            class="flex flex-row font-raleway uppercase font-bold text-white tracking-widest"
+          >
+            <li class="px-6">
+              <a href="/" class="decoration-none hover:text-btnGreen">HOME</a>
+            </li>
+            <li class="px-6">
+              <a href="pricing.html" class="decoration-none hover:text-btnGreen"
+                >PRICING</a
+              >
+            </li>
+            <li class="px-6">
+              <a
+                href="gallery.html"
+                class="decoration-none hover:text-btnGreen text-btnGreen"
+                >GALLERY</a
+              >
+            </li>
+          </ul>
+        </div>
+      </header>
+      <div
+        class="relative w-full my-10 bg-black bg-opacity-50 py-6 px-4 sm:px-8"
+      >
+        <div
+          class="banner justify-center m-auto flex flex-col text-center mb-4"
+        >
+          <h1
+            class="font-raleway text-white drop-shadow-lg font-black text-4xl sm:text-6xl mb-2"
+          >
+            Our Portfolio
+          </h1>
+        </div>
+        <!-- Gallery Categories -->
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+          <div class="gallery-category active" data-category="all">All</div>
+          <div class="gallery-category" data-category="macros">Macros</div>
+          <div class="gallery-category button-outline" data-category="buds">
+            Buds
+          </div>
+          <div class="gallery-category" data-category="dab">Concentrates</div>
+          <div class="gallery-category" data-category="misc">Miscellaneous</div>
+        </div>
+        <!-- Main Gallery -->
+        <div class="gallery-container">
+          <div class="gallery">
+            <div class="preloader"></div>
+            <button class="gallery-prev">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <!-- Gallery Slides -->
+            <div class="gallery-slide active" data-category="macros">
+              <img
+                src="images/gallery/macro01.jpg"
+                alt="Fred Flinstone Macro Photo"
+              />
+              <div class="image-info">
+                <h3>Fred Flinstone</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="macros">
+              <img
+                src="images/gallery/macro02.jpg"
+                alt="D.A.B. #2 Macro Photo"
+              />
+              <div class="image-info">
+                <h3>D.A.B. #2</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="macros">
+              <img
+                src="images/gallery/macro03.jpg"
+                alt="Fred Flinstone Ultra Macro Photo"
+              />
+              <div class="image-info">
+                <h3>Fred Flinstone (Ultra Macro)</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="macros">
+              <img
+                src="images/gallery/macro04.jpg"
+                alt="D.A.B. #2 Ultra Macro Photo"
+              />
+              <div class="image-info">
+                <h3>D.A.B. #2 (Ultra Macro)</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="macros">
+              <img
+                src="images/gallery/macro05.jpg"
+                alt="Fred Flinstone Ultra Macro Photo 2"
+              />
+              <div class="image-info">
+                <h3>Fred Flinstone (Ultra Macro 2)</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="buds">
+              <img
+                src="images/gallery/bud01.jpg"
+                alt="D.A.B. #10 On-Plant Photo"
+              />
+              <div class="image-info">
+                <h3>D.A.B. #10</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="buds">
+              <img
+                src="images/gallery/bud02.jpg"
+                alt="D.A.B. #10 On-Plant Photo 2"
+              />
+              <div class="image-info">
+                <h3>D.A.B. #10 (On-Plant 2)</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="buds">
+              <img
+                src="images/gallery/bud03.jpg"
+                alt="Peanut Butter Cherry Gelato On-Plant Photo"
+              />
+              <div class="image-info">
+                <h3>Peanut Butter Cherry Gelato</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="jars">
+              <img src="images/gallery/jar01.jpg" alt="Hibachi Jar Photo" />
+              <div class="image-info">
+                <h3>Hibachi Jar Photo</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="jars">
+              <img src="images/gallery/jar02.jpg" alt="Sticky Rice Jar Photo" />
+              <div class="image-info">
+                <h3>Sticky Rice Jar Photo</h3>
+                <p>Bred by Clone Depot</p>
+              </div>
+            </div>
+            <!-- Dab -->
+            <div class="gallery-slide" data-category="dab">
+              <img src="images/gallery/dab01.jpg" alt="Blockberry Hash Shot" />
+              <div class="image-info">
+                <h3>Blockberry Full-Spec Hash Shot</h3>
+                <p>Soiku Bano</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="dab">
+              <img
+                src="images/gallery/dab02.jpg"
+                alt="Purple Haze Macro Shot"
+              />
+              <div class="image-info">
+                <h3>Orange Butterscotc Hash Shot</h3>
+                <p>RVRS</p>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="dab">
+              <img src="images/gallery/dab03.jpg" alt="Sour Diesel Hash Shot" />
+              <div class="image-info">
+                <h3>Sour Diesel Hash Shot</h3>
+                <p>In-House Melts</p>
+              </div>
+            </div>
+            <!-- Miscellaneous -->
+            <div class="gallery-slide" data-category="misc">
+              <img src="images/gallery/misc01.jpg" alt="Ballpoint Pen Macro" />
+              <div class="image-info">
+                <h3>Ballpoint Pen Macro</h3>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="misc">
+              <img
+                src="images/gallery/misc02.jpg"
+                alt="Sour Cream and Onion Chip Macro"
+              />
+              <div class="image-info">
+                <h3>Sour Cream & Onion Macro</h3>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="misc">
+              <img src="images/gallery/misc03.jpg" alt="Sheet of Tabs Macro" />
+              <div class="image-info">
+                <h3>Sheet of Tabs Macro</h3>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="misc">
+              <img src="images/gallery/misc04.jpg" alt="Eat Me Paper" />
+              <div class="image-info">
+                <h3>Eat Me</h3>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="misc">
+              <img
+                src="images/gallery/misc05.jpg"
+                alt="Close-up of MicroScoop on Dime"
+              />
+              <div class="image-info">
+                <h3>Close-up of MicroScoop on Dime</h3>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="misc">
+              <img src="images/gallery/misc06.jpg" alt="Raspberry Macro" />
+              <div class="image-info">
+                <h3>Raspberry Macro</h3>
+              </div>
+            </div>
+            <div class="gallery-slide" data-category="misc">
+              <img src="images/gallery/misc07.jpg" alt="Dorito Macro" />
+              <div class="image-info">
+                <h3>Spicy Nacho Dorito</h3>
+              </div>
+            </div>
+            <button class="gallery-next">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+          <!-- Gallery Navigation Dots -->
+          <div class="gallery-nav"></div>
+          <!-- Thumbnails (left aligned) -->
+          <div class="thumbnail-container mt-4">
+            <img
+              class="thumbnail active"
+              src="images/gallery/macro01.jpg"
+              alt="Thumbnail 1"
+              data-index="0"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/macro02.jpg"
+              alt="Thumbnail 2"
+              data-index="1"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/macro03.jpg"
+              alt="Thumbnail 3"
+              data-index="2"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/macro04.jpg"
+              alt="Thumbnail 4"
+              data-index="3"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/macro05.jpg"
+              alt="Thumbnail 5"
+              data-index="4"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/bud01.jpg"
+              alt="Thumbnail 6"
+              data-index="5"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/bud02.jpg"
+              alt="Thumbnail 7"
+              data-index="6"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/bud03.jpg"
+              alt="Thumbnail 8"
+              data-index="7"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/jar01.jpg"
+              alt="Thumbnail 9"
+              data-index="8"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/jar02.jpg"
+              alt="Thumbnail 10"
+              data-index="9"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/dab01.jpg"
+              alt="Thumbnail 11"
+              data-index="10"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/dab02.jpg"
+              alt="Thumbnail 12"
+              data-index="11"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/dab03.jpg"
+              alt="Thumbnail 13"
+              data-index="12"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/misc01.jpg"
+              alt="Thumbnail 14"
+              data-index="13"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/misc02.jpg"
+              alt="Thumbnail 15"
+              data-index="14"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/misc03.jpg"
+              alt="Thumbnail 16"
+              data-index="15"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/misc04.jpg"
+              alt="Thumbnail 17"
+              data-index="16"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/misc05.jpg"
+              alt="Thumbnail 18"
+              data-index="17"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/misc06.jpg"
+              alt="Thumbnail 19"
+              data-index="18"
+            />
+            <img
+              class="thumbnail"
+              src="images/gallery/misc07.jpg"
+              alt="Thumbnail 20"
+              data-index="19"
+            />
+          </div>
+        </div>
+        <div class="text-center mt-12">
+          <a
+            href="https://calendly.com/terps-terpmetrix/quote-call"
+            target="_blank"
+          >
+            <button
+              class="bg-btnGreen text-white font-bold w-fit py-2 px-6 mx-auto rounded-full hover:bg-btnGreendark text-xl uppercase transition-colors duration-300"
+            >
+              Book a Session
+            </button>
+          </a>
+        </div>
+      </div>
+      <footer>
+        <div
+          class="justify-center mt-8 absolute bottom-0 w-full mx-auto py-2 bg-black bg-opacity-50 text-sm text-center"
+        >
+          <p class="text-white">
+            Copyright © 2024 TerpFocus. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function debounce(func, wait) {
+          let timeout;
+          return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+          };
+        }
+
+        const slides = document.querySelectorAll(".gallery-slide");
+        const prevBtn = document.querySelector(".gallery-prev");
+        const nextBtn = document.querySelector(".gallery-next");
+        const navDotsContainer = document.querySelector(".gallery-nav");
+        const thumbnails = document.querySelectorAll(".thumbnail");
+        const categories = document.querySelectorAll(".gallery-category");
+        const preloader = document.querySelector(".preloader");
+        const gallery = document.querySelector(".gallery");
+
+        let currentIndex = 0;
+        let activeSlides = Array.from(slides);
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isTransitioning = false;
+        let transitionTimeout = null;
+
+        function preloadImages() {
+          const allImages = document.querySelectorAll(
+            ".gallery img, .thumbnail"
+          );
+          let loadedCount = 0;
+          const totalCount = allImages.length;
+
+          if (totalCount === 0) {
+            preloader.style.opacity = 0;
+            setTimeout(() => (preloader.style.display = "none"), 300);
+            return;
+          }
+
+          function handleImageLoad() {
+            loadedCount++;
+            if (loadedCount >= totalCount) {
+              preloader.style.opacity = 0;
+              setTimeout(() => (preloader.style.display = "none"), 300);
+            }
+          }
+
+          allImages.forEach((img) => {
+            if (img.complete) {
+              handleImageLoad();
+            } else {
+              img.addEventListener("load", handleImageLoad);
+              img.addEventListener("error", function () {
+                console.log("Image failed to load:", this.src);
+                this.src = "images/placeholder.jpg";
+                handleImageLoad();
+              });
+            }
+          });
+
+          setTimeout(() => {
+            if (preloader.style.display !== "none") {
+              preloader.style.opacity = 0;
+              setTimeout(() => (preloader.style.display = "none"), 300);
+            }
+          }, 5000);
+        }
+
+        function updateDots() {
+          navDotsContainer.innerHTML = "";
+          activeSlides.forEach((slide, pos) => {
+            const dot = document.createElement("div");
+            dot.classList.add("gallery-dot");
+            if (pos === currentIndex) {
+              dot.classList.add("active");
+            }
+            dot.dataset.index = pos;
+            dot.addEventListener("click", () => {
+              if (!isTransitioning) goToSlide(pos);
+            });
+            navDotsContainer.appendChild(dot);
+          });
+        }
+
+        function updateThumbnails() {
+          thumbnails.forEach((thumb) => {
+            const origIndex = parseInt(thumb.dataset.index, 10);
+            const pos = activeSlides.indexOf(slides[origIndex]);
+            if (pos === -1) {
+              thumb.style.display = "none";
+            } else {
+              thumb.style.display = "block";
+              thumb.classList.toggle("active", pos === currentIndex);
+              thumb.style.opacity = pos === currentIndex ? 1 : 0.6;
+              thumb.onclick = () => {
+                if (!isTransitioning) goToSlide(pos);
+              };
+              if (pos === currentIndex) {
+                scrollThumbnailIntoView(thumb);
+              }
+            }
+          });
+        }
+
+        function scrollThumbnailIntoView(thumb) {
+          const container = document.querySelector(".thumbnail-container");
+          if (!container) return;
+          const thumbnailPosition = thumb.offsetLeft;
+          const containerWidth = container.offsetWidth;
+          container.scrollTo({
+            left:
+              thumbnailPosition - containerWidth / 2 + thumb.offsetWidth / 2,
+            behavior: "smooth",
+          });
+        }
+
+        function initGallery() {
+          slides.forEach((slide) => {
+            if (activeSlides.includes(slide)) {
+              slide.style.display = "flex";
+              slide.classList.remove("active");
+            } else {
+              slide.style.display = "none";
+            }
+          });
+          if (activeSlides.length > 0) {
+            activeSlides[0].classList.add("active");
+          }
+          updateDots();
+          updateThumbnails();
+        }
+
+        function goToSlide(index) {
+          if (isTransitioning || activeSlides.length === 0) return;
+          isTransitioning = true;
+          if (index < 0) index = activeSlides.length - 1;
+          if (index >= activeSlides.length) index = 0;
+          currentIndex = index;
+          activeSlides.forEach((slide) => slide.classList.remove("active"));
+          activeSlides[currentIndex].classList.add("active");
+          updateDots();
+          updateThumbnails();
+          transitionTimeout = setTimeout(() => {
+            isTransitioning = false;
+            transitionTimeout = null;
+          }, 500);
+        }
+
+        const nextSlide = debounce(() => {
+          if (!isTransitioning) goToSlide(currentIndex + 1);
+        }, 200);
+        const prevSlide = debounce(() => {
+          if (!isTransitioning) goToSlide(currentIndex - 1);
+        }, 200);
+
+        prevBtn.addEventListener("click", prevSlide);
+        nextBtn.addEventListener("click", nextSlide);
+
+        categories.forEach((category) => {
+          category.addEventListener("click", () => {
+            if (isTransitioning) return;
+            categories.forEach((cat) => cat.classList.remove("active"));
+            category.classList.add("active");
+            const selectedCategory = category.dataset.category;
+            if (selectedCategory === "all") {
+              activeSlides = Array.from(slides);
+            } else {
+              activeSlides = Array.from(slides).filter(
+                (slide) => slide.dataset.category === selectedCategory
+              );
+            }
+            currentIndex = 0;
+            slides.forEach((slide) => {
+              if (activeSlides.includes(slide)) {
+                slide.style.display = "flex";
+              } else {
+                slide.style.display = "none";
+              }
+              slide.classList.remove("active");
+            });
+            if (activeSlides.length > 0) {
+              activeSlides[0].classList.add("active");
+            }
+            updateDots();
+            updateThumbnails();
+          });
+        });
+
+        gallery.addEventListener(
+          "touchstart",
+          (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+          },
+          { passive: true }
+        );
+        gallery.addEventListener(
+          "touchend",
+          (e) => {
+            if (isTransitioning) return;
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+          },
+          { passive: true }
+        );
+        const handleSwipe = debounce(() => {
+          if (touchEndX < touchStartX - 50) nextSlide();
+          if (touchEndX > touchStartX + 50) prevSlide();
+        }, 200);
+
+        document.addEventListener("keydown", (e) => {
+          if (isTransitioning) return;
+          if (e.key === "ArrowLeft") prevSlide();
+          if (e.key === "ArrowRight") nextSlide();
+        });
+
+        document
+          .querySelectorAll(".gallery-slide img, .thumbnail")
+          .forEach((img) => {
+            img.addEventListener("error", function () {
+              console.log("Image failed to load:", this.src);
+              this.src = "images/placeholder.jpg";
+            });
+          });
+
+        window.addEventListener(
+          "resize",
+          debounce(() => {
+            if (!isTransitioning) {
+              updateThumbnails();
+            }
+          }, 200)
+        );
+
+        preloadImages();
+        initGallery();
+      });
+    </script>
+  </body>
+</html>
