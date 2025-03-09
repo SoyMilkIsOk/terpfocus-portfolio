@@ -70,6 +70,7 @@
         object-fit: contain;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         transition: transform 0.3s ease;
+        cursor: pointer; /* Added cursor pointer to indicate it's clickable */
       }
       .gallery-nav {
         display: flex;
@@ -217,6 +218,59 @@
         to {
           transform: translate(-50%, -50%) rotate(360deg);
         }
+      }
+      
+      /* Fullscreen view styles */
+      .fullscreen-view {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .fullscreen-view.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .fullscreen-image {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+      }
+      .fullscreen-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .fullscreen-close:hover {
+        background-color: #00c96b;
+      }
+      .fullscreen-info {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
       }
     </style>
   </head>
@@ -599,6 +653,29 @@
             />
           </div>
         </div>
+        
+        <!-- Fullscreen view container -->
+        <div class="fullscreen-view">
+          <div class="fullscreen-close">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+          <img class="fullscreen-image" src="" alt="Fullscreen view" />
+          <div class="fullscreen-info"></div>
+        </div>
+        
         <div class="text-center mt-12">
           <a
             href="https://calendly.com/terps-terpmetrix/quote-call"
@@ -640,6 +717,12 @@
         const categories = document.querySelectorAll(".gallery-category");
         const preloader = document.querySelector(".preloader");
         const gallery = document.querySelector(".gallery");
+        
+        // Fullscreen view elements
+        const fullscreenView = document.querySelector(".fullscreen-view");
+        const fullscreenImage = document.querySelector(".fullscreen-image");
+        const fullscreenClose = document.querySelector(".fullscreen-close");
+        const fullscreenInfo = document.querySelector(".fullscreen-info");
 
         let currentIndex = 0;
         let activeSlides = Array.from(slides);
@@ -752,8 +835,11 @@
           }
           updateDots();
           updateThumbnails();
+          
+          // Initialize click events for fullscreen view
+          initFullscreenView();
         }
-
+        
         function goToSlide(index) {
           if (isTransitioning || activeSlides.length === 0) return;
           isTransitioning = true;
@@ -769,7 +855,107 @@
             transitionTimeout = null;
           }, 500);
         }
-
+        
+        // Enable keyboard navigation in fullscreen view
+        function setupFullscreenKeyboardNav() {
+          document.addEventListener("keydown", function(e) {
+            if (fullscreenView.classList.contains("active")) {
+              if (e.key === "ArrowRight") {
+                // Go to next image while in fullscreen
+                const nextIndex = (currentIndex + 1) % activeSlides.length;
+                updateFullscreenContent(nextIndex);
+                goToSlide(nextIndex);
+              } else if (e.key === "ArrowLeft") {
+                // Go to previous image while in fullscreen
+                const prevIndex = (currentIndex - 1 + activeSlides.length) % activeSlides.length;
+                updateFullscreenContent(prevIndex);
+                goToSlide(prevIndex);
+              }
+            }
+          });
+        }
+        
+        function updateFullscreenContent(index) {
+          const slide = activeSlides[index];
+          const img = slide.querySelector("img");
+          const info = slide.querySelector(".image-info");
+          
+          if (img) {
+            fullscreenImage.src = img.src;
+            if (info) {
+              fullscreenInfo.innerHTML = info.innerHTML;
+              fullscreenInfo.style.display = "block";
+            } else {
+              fullscreenInfo.style.display = "none";
+            }
+          }
+        }
+        
+        // Fullscreen view functionality
+        function initFullscreenView() {
+          // Add click event to all gallery slide images
+          slides.forEach((slide) => {
+            const img = slide.querySelector("img");
+            if (img) {
+              img.addEventListener("click", function() {
+                if (slide.classList.contains("active")) {
+                  openFullscreen(img.src, slide.querySelector(".image-info")?.innerHTML || "");
+                }
+              });
+            }
+          });
+          
+          // Close fullscreen when clicking the close button
+          fullscreenClose.addEventListener("click", closeFullscreen);
+          
+          // Also close fullscreen when clicking outside the image
+          fullscreenView.addEventListener("click", function(e) {
+            if (e.target === fullscreenView) {
+              closeFullscreen();
+            }
+          });
+          
+          // Close fullscreen with ESC key
+          document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") {
+              closeFullscreen();
+            }
+          });
+        }
+        
+        function openFullscreen(imgSrc, infoHTML) {
+          // Set the image source
+          fullscreenImage.src = imgSrc;
+          
+          // Set the info content if available
+          if (infoHTML) {
+            fullscreenInfo.innerHTML = infoHTML;
+            fullscreenInfo.style.display = "block";
+          } else {
+            fullscreenInfo.style.display = "none";
+          }
+          
+          // Show the fullscreen view
+          fullscreenView.classList.add("active");
+          
+          // Prevent body scrolling when fullscreen is active
+          document.body.style.overflow = "hidden";
+        }
+        
+        function closeFullscreen() {
+          // Hide the fullscreen view
+          fullscreenView.classList.remove("active");
+          
+          // Re-enable body scrolling
+          document.body.style.overflow = "";
+          
+          // Optional: Clear the image source after transition
+          setTimeout(() => {
+            if (!fullscreenView.classList.contains("active")) {
+              fullscreenImage.src = "";
+            }
+          }, 300);
+        }
         const nextSlide = debounce(() => {
           if (!isTransitioning) goToSlide(currentIndex + 1);
         }, 200);
@@ -810,29 +996,73 @@
           });
         });
 
-        gallery.addEventListener(
-          "touchstart",
-          (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-          },
-          { passive: true }
-        );
-        gallery.addEventListener(
-          "touchend",
-          (e) => {
-            if (isTransitioning) return;
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-          },
-          { passive: true }
-        );
+        // Enable swipe on both gallery and fullscreen view
+        function setupTouchEvents() {
+          // Gallery swipe
+          gallery.addEventListener(
+            "touchstart",
+            (e) => {
+              touchStartX = e.changedTouches[0].screenX;
+            },
+            { passive: true }
+          );
+          
+          gallery.addEventListener(
+            "touchend",
+            (e) => {
+              if (isTransitioning) return;
+              touchEndX = e.changedTouches[0].screenX;
+              handleSwipe();
+            },
+            { passive: true }
+          );
+          
+          // Fullscreen view swipe
+          fullscreenView.addEventListener(
+            "touchstart",
+            (e) => {
+              touchStartX = e.changedTouches[0].screenX;
+            },
+            { passive: true }
+          );
+          
+          fullscreenView.addEventListener(
+            "touchend",
+            (e) => {
+              if (isTransitioning) return;
+              touchEndX = e.changedTouches[0].screenX;
+              handleSwipe();
+            },
+            { passive: true }
+          );
+        }
+        
         const handleSwipe = debounce(() => {
-          if (touchEndX < touchStartX - 50) nextSlide();
-          if (touchEndX > touchStartX + 50) prevSlide();
+          if (touchEndX < touchStartX - 50) {
+            if (fullscreenView.classList.contains("active")) {
+              const nextIndex = (currentIndex + 1) % activeSlides.length;
+              updateFullscreenContent(nextIndex);
+              goToSlide(nextIndex);
+            } else {
+              nextSlide();
+            }
+          }
+          if (touchEndX > touchStartX + 50) {
+            if (fullscreenView.classList.contains("active")) {
+              const prevIndex = (currentIndex - 1 + activeSlides.length) % activeSlides.length;
+              updateFullscreenContent(prevIndex);
+              goToSlide(prevIndex);
+            } else {
+              prevSlide();
+            }
+          }
         }, 200);
 
+        // Regular keyboard navigation for gallery
         document.addEventListener("keydown", (e) => {
-          if (isTransitioning) return;
+          // Skip if in fullscreen mode (handled separately) or transitioning
+          if (fullscreenView.classList.contains("active") || isTransitioning) return;
+          
           if (e.key === "ArrowLeft") prevSlide();
           if (e.key === "ArrowRight") nextSlide();
         });
@@ -857,6 +1087,8 @@
 
         preloadImages();
         initGallery();
+        setupTouchEvents();
+        setupFullscreenKeyboardNav();
       });
     </script>
   </body>
