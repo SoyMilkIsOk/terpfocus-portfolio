@@ -2,6 +2,9 @@ import {
   getBrandById,
   getFullUrl,
   getFullWebpUrl,
+  getOriginalUrl,
+  getOriginalWebpUrl,
+  hasNativeOriginal,
   renderPicture,
 } from '../data/galleryData.js';
 
@@ -9,6 +12,20 @@ const ZOOM_IN_SVG =
   '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
 const ZOOM_OUT_SVG =
   '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+
+let webpSupportPromise = null;
+function supportsWebp() {
+  if (!webpSupportPromise) {
+    webpSupportPromise = new Promise((resolve) => {
+      const probe = new Image();
+      probe.onload = () => resolve(probe.width > 0 && probe.height > 0);
+      probe.onerror = () => resolve(false);
+      probe.src =
+        'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
+    });
+  }
+  return webpSupportPromise;
+}
 
 export function createLightbox() {
   const modal = document.createElement('div');
@@ -21,7 +38,13 @@ export function createLightbox() {
 
   modal.innerHTML = `
     <div class="relative z-30 flex items-center justify-between gap-4 border-b border-white/10 bg-[#050608]/90 px-4 py-3 sm:px-6 sm:py-4 shrink-0">
-      <span data-lb-counter class="text-xs font-medium text-zinc-400">1 / 1</span>
+      <div class="flex items-center gap-3">
+        <span data-lb-counter class="text-xs font-medium text-zinc-400">1 / 1</span>
+        <span data-lb-hd class="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 text-[11px] font-medium text-zinc-400">
+          <span data-lb-hd-dot class="h-1.5 w-1.5 rounded-full bg-[#00E082] animate-pulse"></span>
+          <span data-lb-hd-label>Loading Full Res</span>
+        </span>
+      </div>
       <div class="flex items-center gap-2 shrink-0">
         <button type="button" data-lb-zoom aria-label="Zoom in" title="Zoom" class="inline-flex items-center justify-center w-9 h-9 rounded-md border border-white/15 bg-white/[0.04] hover:border-[#00E082] hover:text-[#00E082] text-zinc-200 transition cursor-pointer">
           ${ZOOM_IN_SVG}
@@ -70,6 +93,9 @@ export function createLightbox() {
   const spinner = modal.querySelector('[data-lb-spinner]');
   const attributionBubble = modal.querySelector('[data-lb-attribution]');
   const counterEl = modal.querySelector('[data-lb-counter]');
+  const hdBadge = modal.querySelector('[data-lb-hd]');
+  const hdDot = modal.querySelector('[data-lb-hd-dot]');
+  const hdLabel = modal.querySelector('[data-lb-hd-label]');
   const zoomBtn = modal.querySelector('[data-lb-zoom]');
   const closeBtn = modal.querySelector('[data-lb-close]');
   const prevBtn = modal.querySelector('[data-lb-prev]');
@@ -77,12 +103,18 @@ export function createLightbox() {
 
   let items = [];
   let index = 0;
+  let renderToken = 0;
+  const upgradedSlugs = new Set();
   let isZoomed = false;
   let baseWidth = 0;
   let baseHeight = 0;
   let touchStartX = 0;
+  let touchStartY = 0;
+  let touchDidDrag = false;
   let panNormX = 0.5;
   let panNormY = 0.5;
+  let dragStartNormX = 0.5;
+  let dragStartNormY = 0.5;
 
   function captureBaseMetrics() {
     if (isZoomed) return;
@@ -91,6 +123,21 @@ export function createLightbox() {
       baseWidth = rect.width;
       baseHeight = rect.height;
     }
+  }
+
+  function getZoomMetrics() {
+    const vpRect = viewport.getBoundingClientRect();
+    const w = baseWidth || img.offsetWidth || vpRect.width;
+    const h = baseHeight || img.offsetHeight || vpRect.height;
+
+    // Scale up enough so even square or tall crops fill the whole viewport between header & footer
+    const coverScale = w > 0 && h > 0 ? Math.max(vpRect.width / w, vpRect.height / h) : 2.2;
+    const zoomScale = Math.max(2.15, coverScale * 1.12);
+
+    const overflowX = Math.max(0, (w * zoomScale - vpRect.width) / 2);
+    const overflowY = Math.max(0, (h * zoomScale - vpRect.height) / 2);
+
+    return { zoomScale, overflowX, overflowY };
   }
 
   function applyZoomTransform(nx, ny, smooth = false) {
@@ -107,17 +154,7 @@ export function createLightbox() {
       return;
     }
 
-    const vpRect = viewport.getBoundingClientRect();
-    const w = baseWidth || img.offsetWidth || vpRect.width;
-    const h = baseHeight || img.offsetHeight || vpRect.height;
-
-    // Scale up enough so even square or tall crops fill the whole viewport between header & footer
-    const coverScale = w > 0 && h > 0 ? Math.max(vpRect.width / w, vpRect.height / h) : 2.2;
-    const zoomScale = Math.max(2.15, coverScale * 1.12);
-
-    const overflowX = Math.max(0, (w * zoomScale - vpRect.width) / 2);
-    const overflowY = Math.max(0, (h * zoomScale - vpRect.height) / 2);
-
+    const { zoomScale, overflowX, overflowY } = getZoomMetrics();
     const tx = (0.5 - panNormX) * 2 * overflowX;
     const ty = (0.5 - panNormY) * 2 * overflowY;
 
@@ -133,6 +170,7 @@ export function createLightbox() {
     img.classList.toggle('rounded-lg', !zoomed);
     stage.classList.toggle('is-zoomed', zoomed);
     stage.classList.toggle('is-zoomable', !zoomed);
+    stage.classList.toggle('touch-none', zoomed);
     zoomBtn.innerHTML = zoomed ? ZOOM_OUT_SVG : ZOOM_IN_SVG;
     zoomBtn.setAttribute('aria-label', zoomed ? 'Zoom out' : 'Zoom in');
     applyZoomTransform(nx, ny, true);
@@ -162,18 +200,87 @@ export function createLightbox() {
     attributionBubble.classList.add('inline-flex');
   }
 
+  function setHdBadge(state) {
+    if (!hdBadge || !hdDot || !hdLabel) return;
+    if (state === 'loading') {
+      hdBadge.classList.remove('hidden');
+      hdBadge.classList.add('inline-flex');
+      hdDot.classList.add('animate-pulse');
+      hdLabel.textContent = 'Loading Full Res';
+      hdBadge.classList.remove('border-[#00E082]/35', 'text-[#00E082]');
+      hdBadge.classList.add('border-white/10', 'text-zinc-400');
+    } else if (state === 'ready') {
+      hdBadge.classList.remove('hidden');
+      hdBadge.classList.add('inline-flex');
+      hdDot.classList.remove('animate-pulse');
+      hdLabel.textContent = 'Full Res';
+      hdBadge.classList.remove('border-white/10', 'text-zinc-400');
+      hdBadge.classList.add('border-[#00E082]/35', 'text-[#00E082]');
+    } else {
+      hdBadge.classList.add('hidden');
+      hdBadge.classList.remove('inline-flex');
+    }
+  }
+
+  async function upgradeToOriginal(slug, token) {
+    if (!hasNativeOriginal(slug)) {
+      upgradedSlugs.add(slug);
+      setHdBadge('ready');
+      return;
+    }
+
+    const useWebp = await supportsWebp();
+    if (token !== renderToken) return;
+    if (!useWebp) {
+      upgradedSlugs.add(slug);
+      setHdBadge('ready');
+      return;
+    }
+
+    const targetUrl = getOriginalWebpUrl(slug);
+    const master = new Image();
+    master.decoding = 'async';
+    master.onload = () => {
+      upgradedSlugs.add(slug);
+      if (token !== renderToken) return;
+      if (webpSource) webpSource.srcset = targetUrl;
+      img.src = getOriginalUrl(slug);
+      setHdBadge('ready');
+    };
+    master.onerror = () => {
+      if (token !== renderToken) return;
+      setHdBadge('hidden');
+    };
+    master.src = targetUrl;
+  }
+
   function render() {
     if (!items.length) return;
     const item = items[index];
+    const token = ++renderToken;
     baseWidth = 0;
     baseHeight = 0;
     setZoom(false, 0.5, 0.5);
     spinner.classList.remove('hidden');
-    if (webpSource) webpSource.srcset = getFullWebpUrl(item.slug);
-    img.src = getFullUrl(item.slug);
+
+    const alreadyFullRes = upgradedSlugs.has(item.slug) || !hasNativeOriginal(item.slug);
+    if (webpSource) {
+      webpSource.srcset = alreadyFullRes
+        ? getOriginalWebpUrl(item.slug)
+        : getFullWebpUrl(item.slug);
+    }
+    img.src = alreadyFullRes ? getOriginalUrl(item.slug) : getFullUrl(item.slug);
     img.alt = item.brandId ? getBrandById(item.brandId)?.name || 'Gallery photo' : 'Gallery photo';
     renderAttributionBubble(item.brandId);
     counterEl.textContent = `${index + 1} / ${items.length}`;
+
+    if (alreadyFullRes) {
+      upgradedSlugs.add(item.slug);
+      setHdBadge('ready');
+    } else {
+      setHdBadge('loading');
+      upgradeToOriginal(item.slug, token);
+    }
   }
 
   img.addEventListener('load', () => {
@@ -197,6 +304,7 @@ export function createLightbox() {
   }
 
   function close() {
+    renderToken++;
     modal.classList.remove('opacity-100');
     modal.classList.add('opacity-0');
     modal.setAttribute('aria-hidden', 'true');
@@ -231,6 +339,10 @@ export function createLightbox() {
   }
 
   stage.addEventListener('click', (e) => {
+    if (touchDidDrag) {
+      touchDidDrag = false;
+      return;
+    }
     const [nx, ny] = getViewportNorm(e.clientX, e.clientY);
     setZoom(!isZoomed, nx, ny);
   });
@@ -258,7 +370,12 @@ export function createLightbox() {
   stage.addEventListener(
     'touchstart',
     (e) => {
-      touchStartX = e.changedTouches[0].screenX;
+      const touch = e.changedTouches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchDidDrag = false;
+      dragStartNormX = panNormX;
+      dragStartNormY = panNormY;
     },
     { passive: true }
   );
@@ -267,17 +384,33 @@ export function createLightbox() {
     'touchmove',
     (e) => {
       if (!isZoomed || !e.touches.length) return;
-      const [nx, ny] = getViewportNorm(e.touches[0].clientX, e.touches[0].clientY);
-      applyZoomTransform(nx, ny, false);
+      e.preventDefault();
+      const touch = e.touches[0];
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+      if (Math.hypot(dx, dy) > 6) touchDidDrag = true;
+
+      // Natural 1:1 touch drag: dragging finger right/down pulls the photo right/down
+      const { overflowX, overflowY } = getZoomMetrics();
+      const nextNx = overflowX > 0 ? dragStartNormX - dx / (2 * overflowX) : 0.5;
+      const nextNy = overflowY > 0 ? dragStartNormY - dy / (2 * overflowY) : 0.5;
+      applyZoomTransform(nextNx, nextNy, false);
     },
-    { passive: true }
+    { passive: false }
   );
 
   stage.addEventListener(
     'touchend',
     (e) => {
-      if (isZoomed) return;
-      const diff = e.changedTouches[0].screenX - touchStartX;
+      if (isZoomed) {
+        if (touchDidDrag) {
+          setTimeout(() => {
+            touchDidDrag = false;
+          }, 50);
+        }
+        return;
+      }
+      const diff = e.changedTouches[0].clientX - touchStartX;
       if (diff < -50) next();
       if (diff > 50) prev();
     },

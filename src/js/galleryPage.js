@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const lightbox = createLightbox();
 
   const grid = document.getElementById('archive-grid');
-  const countEl = document.getElementById('archive-count');
   if (!grid) return;
 
   const randomizedCatalog = shuffleItems(GALLERY_ITEMS).map((item, idx) => {
@@ -37,10 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cropClass: picked,
     };
   });
-
-  if (countEl) {
-    countEl.textContent = `${randomizedCatalog.length} photos`;
-  }
 
   grid.innerHTML = '';
 

@@ -72,6 +72,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet" />
+  <link rel="preload" as="image" type="image/webp" href="/media/full/dsxuog-4.webp" fetchpriority="high" />
+  <link rel="preload" as="image" type="image/webp" href="/media/full/dsxuog-4-closeup.webp" fetchpriority="high" />
   <script type="module" src="/src/js/main.js"></script>
 </head>
 
@@ -122,190 +124,177 @@
   <main class="flex-1">
     <!-- Hero + Large Split Slider Viewer -->
     <section class="border-b border-white/[0.06]">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-10 sm:py-14 lg:py-16">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-              <div class="order-2 lg:order-1 lg:col-span-4 space-y-5">
-                <h1 class="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.08]">
-                  Cannabis Studio &amp; Macro Photography.
-                </h1>
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-10 sm:py-14 lg:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          <div class="order-2 lg:order-1 lg:col-span-4 space-y-5">
+            <h1 class="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.08]">
+              Cannabis Studio &amp; Macro Photography
+            </h1>
 
-                <p class="text-base text-zinc-400 leading-relaxed">
-                  Studio shoots, concentrates, flower, and ultra-macro visuals built for menus, packaging, and
-                  campaigns.
-                </p>
+            <p class="text-base text-zinc-400 leading-relaxed">
+              Studio shoots, concentrates, flower, and ultra-macro visuals built for menus, packaging, and
+              campaigns.
+            </p>
 
-                <div class="flex flex-wrap items-center gap-3 pt-1">
-                  <a href="#inquire"
-                    class="inline-flex items-center justify-center rounded-md bg-[#00E082] px-5 py-3 text-sm font-semibold text-[#050608] hover:bg-[#19f095] transition-colors">
-                    Book a Shoot
-                  </a>
-                  <a href="/gallery.html"
-                    class="inline-flex items-center justify-center rounded-md border border-white/15 bg-[#0B0D11] px-5 py-3 text-sm font-medium text-zinc-200 hover:border-[#00E082] hover:text-white transition-colors">
-                    View Gallery
-                  </a>
-                </div>
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <a href="#inquire"
+                class="inline-flex items-center justify-center rounded-md bg-[#00E082] px-5 py-3 text-sm font-semibold text-[#050608] hover:bg-[#19f095] transition-colors">
+                Book a Shoot
+              </a>
+              <a href="/gallery.html"
+                class="inline-flex items-center justify-center rounded-md border border-white/15 bg-[#0B0D11] px-5 py-3 text-sm font-medium text-zinc-200 hover:border-[#00E082] hover:text-white transition-colors">
+                View Gallery
+              </a>
+            </div>
+          </div>
+
+          <!-- Interactive 3D Rotating Cube Gallery -->
+          <div class="order-1 lg:order-2 lg:col-span-8">
+            <div id="optical-hero-inspector" class="relative">
+              <div data-cube-controls
+                class="absolute top-3 right-3 z-20 flex items-center gap-1.5 transition-opacity duration-300 ease-out">
+                <button type="button" data-cube-prev title="Previous" aria-label="Previous"
+                  class="inline-flex items-center justify-center h-8 w-8 rounded-full border border-white/20 bg-black/20 backdrop-blur-sm text-white/75 hover:border-[#00E082]/70 hover:text-[#00E082] hover:bg-black/40 transition cursor-pointer">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button type="button" data-cube-next title="Next" aria-label="Next"
+                  class="inline-flex items-center justify-center h-8 w-8 rounded-full border border-white/20 bg-black/20 backdrop-blur-sm text-white/75 hover:border-[#00E082]/70 hover:text-[#00E082] hover:bg-black/40 transition cursor-pointer">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
               </div>
 
-              <!-- Interactive 3D Rotating Cube Gallery -->
-                <div class="order-1 lg:order-2 lg:col-span-8">
-                  <div id="optical-hero-inspector" class="relative">
-                    <div data-cube-controls
-                      class="absolute top-3 right-3 z-20 flex items-center gap-1.5 transition-opacity duration-300 ease-out">
-                      <button type="button" data-cube-prev title="Previous" aria-label="Previous"
-                        class="inline-flex items-center justify-center h-8 w-8 rounded-full border border-white/20 bg-black/20 backdrop-blur-sm text-white/75 hover:border-[#00E082]/70 hover:text-[#00E082] hover:bg-black/40 transition cursor-pointer">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                          <polyline points="15 18 9 12 15 6" />
-                        </svg>
-                      </button>
-                      <button type="button" data-cube-next title="Next" aria-label="Next"
-                        class="inline-flex items-center justify-center h-8 w-8 rounded-full border border-white/20 bg-black/20 backdrop-blur-sm text-white/75 hover:border-[#00E082]/70 hover:text-[#00E082] hover:bg-black/40 transition cursor-pointer">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                      </button>
-                      <button type="button" data-hero-inspect title="View full screen" aria-label="View full screen"
-                        class="inline-flex items-center justify-center h-8 w-8 rounded-full border border-white/20 bg-black/20 backdrop-blur-sm text-white/75 hover:border-[#00E082]/70 hover:text-[#00E082] hover:bg-black/40 transition cursor-pointer">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                          stroke-width="1.75">
-                          <polyline points="15 3 21 3 21 9" />
-                          <polyline points="9 21 3 21 3 15" />
-                          <line x1="21" y1="3" x2="14" y2="10" />
-                          <line x1="3" y1="21" x2="10" y2="14" />
-                        </svg>
-                      </button>
+              <div data-cube-scene class="cube-scene relative aspect-[3/2] w-full cursor-ew-resize">
+                <div data-cube-track class="cube-track">
+                  <div data-cube-face="0" class="cube-face cube-face-0">
+                    <picture class="block h-full w-full">
+                      <source data-face-wide-webp srcset="/media/full/dsxuog-4.webp" type="image/webp" />
+                      <img data-face-wide src="/media/full/dsxuog-4.jpg" alt="Macro photo" fetchpriority="high"
+                        decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
+                    </picture>
+                    <div data-face-close-layer class="optical-compare-closeup">
+                      <picture class="block h-full w-full">
+                        <source data-face-close-webp srcset="/media/full/dsxuog-4-closeup.webp" type="image/webp" />
+                        <img data-face-close src="/media/full/dsxuog-4-closeup.jpg" alt="Macro close-up photo"
+                          fetchpriority="high" decoding="async" class="h-full w-full object-cover select-none"
+                          draggable="false" />
+                      </picture>
                     </div>
-
-                    <div data-cube-scene class="cube-scene relative aspect-[3/2] w-full cursor-ew-resize">
-                      <div data-cube-track class="cube-track">
-                        <div data-cube-face="0" class="cube-face cube-face-0">
-                          <picture class="block h-full w-full">
-                            <source data-face-wide-webp srcset="/media/full/dsxuog-4.webp" type="image/webp" />
-                            <img data-face-wide src="/media/full/dsxuog-4.jpg" alt="Macro photo" fetchpriority="high"
-                              decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
-                          </picture>
-                          <div data-face-close-layer class="optical-compare-closeup">
-                            <picture class="block h-full w-full">
-                              <source data-face-close-webp srcset="/media/full/dsxuog-4-closeup.webp"
-                                type="image/webp" />
-                              <img data-face-close src="/media/full/dsxuog-4-closeup.jpg" alt="Macro close-up photo"
-                                fetchpriority="high" decoding="async" class="h-full w-full object-cover select-none"
-                                draggable="false" />
-                            </picture>
-                          </div>
-                          <div data-face-divider
-                            class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
-                            <div
-                              class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
-                              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="15 18 9 12 15 6" transform="translate(-3 0)" />
-                                <polyline points="9 18 15 12 9 6" transform="translate(3 0)" />
-                              </svg>
-                            </div>
-                          </div>
-                          <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
-                            <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
-                              style="transform: scaleX(0)"></div>
-                          </div>
-                        </div>
-
-                        <div data-cube-face="1" class="cube-face cube-face-1">
-                          <picture class="block h-full w-full">
-                            <source data-face-wide-webp srcset="/media/full/dab-2.webp" type="image/webp" />
-                            <img data-face-wide src="/media/full/dab-2.jpg" alt="Macro photo" decoding="async"
-                              class="h-full w-full object-cover select-none" draggable="false" />
-                          </picture>
-                          <div data-face-close-layer class="optical-compare-closeup">
-                            <picture class="block h-full w-full">
-                              <source data-face-close-webp srcset="/media/full/dab-2-closeup.webp" type="image/webp" />
-                              <img data-face-close src="/media/full/dab-2-closeup.jpg" alt="Macro close-up photo"
-                                decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
-                            </picture>
-                          </div>
-                          <div data-face-divider
-                            class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
-                            <div
-                              class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
-                              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="15 18 9 12 15 6" transform="translate(-3 0)" />
-                                <polyline points="9 18 15 12 9 6" transform="translate(3 0)" />
-                              </svg>
-                            </div>
-                          </div>
-                          <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
-                            <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
-                              style="transform: scaleX(0)"></div>
-                          </div>
-                        </div>
-
-                        <div data-cube-face="2" class="cube-face cube-face-2">
-                          <picture class="block h-full w-full">
-                            <source data-face-wide-webp srcset="/media/full/ltxpm-5-2.webp" type="image/webp" />
-                            <img data-face-wide src="/media/full/ltxpm-5-2.jpg" alt="Macro photo" decoding="async"
-                              class="h-full w-full object-cover select-none" draggable="false" />
-                          </picture>
-                          <div data-face-close-layer class="optical-compare-closeup">
-                            <picture class="block h-full w-full">
-                              <source data-face-close-webp srcset="/media/full/ltxpm-5-2-closeup.webp"
-                                type="image/webp" />
-                              <img data-face-close src="/media/full/ltxpm-5-2-closeup.jpg" alt="Macro close-up photo"
-                                decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
-                            </picture>
-                          </div>
-                          <div data-face-divider
-                            class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
-                            <div
-                              class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
-                              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="15 18 9 12 15 6" transform="translate(-3 0)" />
-                                <polyline points="9 18 15 12 9 6" transform="translate(3 0)" />
-                              </svg>
-                            </div>
-                          </div>
-                          <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
-                            <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
-                              style="transform: scaleX(0)"></div>
-                          </div>
-                        </div>
-
-                        <div data-cube-face="3" class="cube-face cube-face-3">
-                          <picture class="block h-full w-full">
-                            <source data-face-wide-webp srcset="/media/full/dsxuog-4.webp" type="image/webp" />
-                            <img data-face-wide src="/media/full/dsxuog-4.jpg" alt="Macro photo" decoding="async"
-                              class="h-full w-full object-cover select-none" draggable="false" />
-                          </picture>
-                          <div data-face-close-layer class="optical-compare-closeup">
-                            <picture class="block h-full w-full">
-                              <source data-face-close-webp srcset="/media/full/dsxuog-4-closeup.webp"
-                                type="image/webp" />
-                              <img data-face-close src="/media/full/dsxuog-4-closeup.jpg" alt="Macro close-up photo"
-                                decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
-                            </picture>
-                          </div>
-                          <div data-face-divider
-                            class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
-                            <div
-                              class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
-                              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="15 18 9 12 15 6" transform="translate(-3 0)" />
-                                <polyline points="9 18 15 12 9 6" transform="translate(3 0)" />
-                              </svg>
-                            </div>
-                          </div>
-                          <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
-                            <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
-                              style="transform: scaleX(0)"></div>
-                          </div>
-                        </div>
+                    <div data-face-divider class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
+                      <div
+                        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
+                        <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="1.85" stroke-linecap="round">
+                          <line x1="6.5" y1="4.5" x2="6.5" y2="19.5" />
+                          <line x1="12" y1="4.5" x2="12" y2="19.5" />
+                          <line x1="17.5" y1="4.5" x2="17.5" y2="19.5" />
+                        </svg>
                       </div>
+                    </div>
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
+                      <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
+                        style="transform: scaleX(0)"></div>
+                    </div>
+                  </div>
+
+                  <div data-cube-face="1" class="cube-face cube-face-1">
+                    <picture class="block h-full w-full">
+                      <source data-face-wide-webp srcset="/media/full/dab-2.webp" type="image/webp" />
+                      <img data-face-wide src="/media/full/dab-2.jpg" alt="Macro photo" decoding="async"
+                        class="h-full w-full object-cover select-none" draggable="false" />
+                    </picture>
+                    <div data-face-close-layer class="optical-compare-closeup">
+                      <picture class="block h-full w-full">
+                        <source data-face-close-webp srcset="/media/full/dab-2-closeup.webp" type="image/webp" />
+                        <img data-face-close src="/media/full/dab-2-closeup.jpg" alt="Macro close-up photo"
+                          decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
+                      </picture>
+                    </div>
+                    <div data-face-divider class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
+                      <div
+                        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
+                        <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="1.85" stroke-linecap="round">
+                          <line x1="6.5" y1="4.5" x2="6.5" y2="19.5" />
+                          <line x1="12" y1="4.5" x2="12" y2="19.5" />
+                          <line x1="17.5" y1="4.5" x2="17.5" y2="19.5" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
+                      <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
+                        style="transform: scaleX(0)"></div>
+                    </div>
+                  </div>
+
+                  <div data-cube-face="2" class="cube-face cube-face-2">
+                    <picture class="block h-full w-full">
+                      <source data-face-wide-webp srcset="/media/full/ltxpm-5-2.webp" type="image/webp" />
+                      <img data-face-wide src="/media/full/ltxpm-5-2.jpg" alt="Macro photo" decoding="async"
+                        class="h-full w-full object-cover select-none" draggable="false" />
+                    </picture>
+                    <div data-face-close-layer class="optical-compare-closeup">
+                      <picture class="block h-full w-full">
+                        <source data-face-close-webp srcset="/media/full/ltxpm-5-2-closeup.webp" type="image/webp" />
+                        <img data-face-close src="/media/full/ltxpm-5-2-closeup.jpg" alt="Macro close-up photo"
+                          decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
+                      </picture>
+                    </div>
+                    <div data-face-divider class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
+                      <div
+                        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
+                        <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="1.85" stroke-linecap="round">
+                          <line x1="6.5" y1="4.5" x2="6.5" y2="19.5" />
+                          <line x1="12" y1="4.5" x2="12" y2="19.5" />
+                          <line x1="17.5" y1="4.5" x2="17.5" y2="19.5" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
+                      <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
+                        style="transform: scaleX(0)"></div>
+                    </div>
+                  </div>
+
+                  <div data-cube-face="3" class="cube-face cube-face-3">
+                    <picture class="block h-full w-full">
+                      <source data-face-wide-webp srcset="/media/full/dsxuog-4.webp" type="image/webp" />
+                      <img data-face-wide src="/media/full/dsxuog-4.jpg" alt="Macro photo" decoding="async"
+                        class="h-full w-full object-cover select-none" draggable="false" />
+                    </picture>
+                    <div data-face-close-layer class="optical-compare-closeup">
+                      <picture class="block h-full w-full">
+                        <source data-face-close-webp srcset="/media/full/dsxuog-4-closeup.webp" type="image/webp" />
+                        <img data-face-close src="/media/full/dsxuog-4-closeup.jpg" alt="Macro close-up photo"
+                          decoding="async" class="h-full w-full object-cover select-none" draggable="false" />
+                      </picture>
+                    </div>
+                    <div data-face-divider class="pointer-events-none absolute top-0 bottom-0 z-10 w-px bg-[#00E082]">
+                      <div
+                        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-[#00E082] bg-[#050608] text-[#00E082] shadow-lg">
+                        <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="1.85" stroke-linecap="round">
+                          <line x1="6.5" y1="4.5" x2="6.5" y2="19.5" />
+                          <line x1="12" y1="4.5" x2="12" y2="19.5" />
+                          <line x1="17.5" y1="4.5" x2="17.5" y2="19.5" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-1 bg-white/15">
+                      <div data-face-progress class="h-full w-full bg-[#00E082] origin-left"
+                        style="transform: scaleX(0)"></div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Freeform Brand Board & Artistic Shoots -->
@@ -392,12 +381,20 @@
                     <label for="inq-focus" class="block text-xs font-medium text-zinc-300 mb-1.5">
                       What are we shooting? *
                     </label>
-                    <select id="inq-focus" name="projectType" required
-                      class="w-full rounded-md border border-[#1B2029] bg-[#050608] px-3.5 py-2.5 text-sm text-white focus:border-[#00E082] focus:outline-none transition">
-                      <option value="Flower, Concentrates &amp; Macros">Flower, Concentrates &amp; Macros</option>
-                      <option value="Studio Product &amp; Packaging">Studio Product &amp; Packaging</option>
-                      <option value="Full Brand Shoot">Full Brand Shoot</option>
-                    </select>
+                    <div class="relative group">
+                      <select id="inq-focus" name="projectType" required
+                        class="w-full appearance-none rounded-md border border-[#1B2029] bg-[#050608] pl-3.5 pr-10 py-2.5 text-sm text-white focus:border-[#00E082] focus:outline-none transition cursor-pointer">
+                        <option value="Flower, Concentrates &amp; Macros">Flower, Concentrates &amp; Macros</option>
+                        <option value="Studio Product &amp; Packaging">Studio Product &amp; Packaging</option>
+                        <option value="Full Brand Shoot">Full Brand Shoot</option>
+                      </select>
+                      <svg aria-hidden="true"
+                        class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 group-focus-within:text-[#00E082] transition-colors"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
@@ -406,13 +403,21 @@
                     <label for="inq-count" class="block text-xs font-medium text-zinc-300 mb-1.5">
                       How many strains or products?
                     </label>
-                    <select id="inq-count" name="strainCount"
-                      class="w-full rounded-md border border-[#1B2029] bg-[#050608] px-3.5 py-2.5 text-sm text-white focus:border-[#00E082] focus:outline-none transition">
-                      <option value="1-3">1–3</option>
-                      <option value="4-8">4–8</option>
-                      <option value="9-15">9–15</option>
-                      <option value="15+">15+</option>
-                    </select>
+                    <div class="relative group">
+                      <select id="inq-count" name="strainCount"
+                        class="w-full appearance-none rounded-md border border-[#1B2029] bg-[#050608] pl-3.5 pr-10 py-2.5 text-sm text-white focus:border-[#00E082] focus:outline-none transition cursor-pointer">
+                        <option value="1-3">1–3</option>
+                        <option value="4-8">4–8</option>
+                        <option value="9-15">9–15</option>
+                        <option value="15+">15+</option>
+                      </select>
+                      <svg aria-hidden="true"
+                        class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 group-focus-within:text-[#00E082] transition-colors"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </div>
                   </div>
                   <div>
                     <label for="inq-timeline" class="block text-xs font-medium text-zinc-300 mb-1.5">

@@ -1,6 +1,6 @@
-import { OPTICAL_PAIRS, GALLERY_ITEMS, getFullUrl, getFullWebpUrl } from '../data/galleryData.js';
+import { OPTICAL_PAIRS, getFullUrl, getFullWebpUrl } from '../data/galleryData.js';
 
-export function initOpticalHero(lightbox) {
+export function initOpticalHero() {
   const root = document.getElementById('optical-hero-inspector');
   if (!root) return;
 
@@ -11,7 +11,6 @@ export function initOpticalHero(lightbox) {
   const faces = Array.from(root.querySelectorAll('[data-cube-face]'));
   const prevBtn = root.querySelector('[data-cube-prev]');
   const nextBtn = root.querySelector('[data-cube-next]');
-  const inspectBtn = root.querySelector('[data-hero-inspect]');
 
   if (!scene || !track || faces.length !== 4) return;
 
@@ -206,11 +205,6 @@ export function initOpticalHero(lightbox) {
 
   prevBtn?.addEventListener('click', () => rotateCube(-1));
   nextBtn?.addEventListener('click', () => rotateCube(1));
-
-  inspectBtn?.addEventListener('click', () => {
-    const activePair = getPairForStep(step);
-    lightbox.open([{ slug: activePair.closeSlug, brandId: null }], 0);
-  });
 
   // Initial setup
   prepareAdjacentFaces();

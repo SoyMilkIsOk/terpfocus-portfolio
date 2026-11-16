@@ -1,7 +1,26 @@
+const NATIVE_ORIGINAL_SLUGS = new Set([
+  'pbg-nug1',
+  'dsxuog-4',
+  'dab-2',
+  'ltxpm-5-2',
+  'dab-10',
+  'dsxuog-5',
+  'inhouse1',
+  'inhouse2',
+  'spcy1',
+  'spcy2',
+  'spcy3',
+  'spcy4',
+]);
+
 export const getThumbUrl = (slug) => `/media/thumbs/${slug}.jpg`;
 export const getThumbWebpUrl = (slug) => `/media/thumbs/${slug}.webp`;
 export const getFullUrl = (slug) => `/media/full/${slug}.jpg`;
 export const getFullWebpUrl = (slug) => `/media/full/${slug}.webp`;
+export const hasNativeOriginal = (slug) => NATIVE_ORIGINAL_SLUGS.has(slug);
+export const getOriginalUrl = (slug) => getFullUrl(slug);
+export const getOriginalWebpUrl = (slug) =>
+  NATIVE_ORIGINAL_SLUGS.has(slug) ? `/media/original/${slug}.webp` : getFullWebpUrl(slug);
 
 function escapeAttr(value) {
   return String(value ?? '')

@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
   <url>
     <loc>https://terpfocus.com/</loc>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/og-cover.jpg</image:loc>
+      <image:title>TerpFocus Cannabis Studio and Macro Photography</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/dsxuog-4.jpg</image:loc>
+      <image:title>Cannabis Darkfield Studio Macro</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/dab-2.jpg</image:loc>
+      <image:title>Cannabis Resin Macro Study</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/ltxpm-5-2.jpg</image:loc>
+      <image:title>Cannabis Flower Studio Close-Up</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://terpfocus.com/gallery.html</loc>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/clonedepot1.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/clonedepot2.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/clonedepot3.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/inhouse1.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/inhouse2.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/spcy1.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/spcy2.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/spcy3.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/spcy4.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/pbg-nug1.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/dsxuog-5.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/dab-10.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://terpfocus.com/media/full/ltxpm-5-2.jpg</image:loc>
+    </image:image>
   </url>
 </urlset>
-

@@ -47,9 +47,10 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": ["CollectionPage", "ImageGallery"],
         "name": "Gallery | TerpFocus",
         "url": "https://terpfocus.com/gallery.html",
+        "primaryImageOfPage": "https://terpfocus.com/media/og-cover.jpg",
         "description": "Portfolio gallery of cannabis studio, flower, concentrate, and macro photography by TerpFocus.",
         "isPartOf": {
           "@type": "WebSite",
@@ -121,11 +122,10 @@
 
     <main class="flex-1 py-10 sm:py-14">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-white/[0.08]">
+        <div class="pb-8 border-b border-white/[0.08]">
           <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white">
             Gallery
           </h1>
-          <p id="archive-count" class="text-xs text-zinc-400 shrink-0"></p>
         </div>
 
         <div id="archive-grid" class="mt-8 columns-1 sm:columns-2 lg:columns-3 gap-5"></div>
