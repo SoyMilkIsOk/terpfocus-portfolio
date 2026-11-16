@@ -38,13 +38,7 @@ export function createLightbox() {
 
   modal.innerHTML = `
     <div class="relative z-30 flex items-center justify-between gap-4 border-b border-white/10 bg-[#050608]/90 px-4 py-3 sm:px-6 sm:py-4 shrink-0">
-      <div class="flex items-center gap-3">
-        <span data-lb-counter class="text-xs font-medium text-zinc-400">1 / 1</span>
-        <span data-lb-hd class="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 text-[11px] font-medium text-zinc-400">
-          <span data-lb-hd-dot class="h-1.5 w-1.5 rounded-full bg-[#00E082] animate-pulse"></span>
-          <span data-lb-hd-label>Loading Full Res</span>
-        </span>
-      </div>
+      <span data-lb-counter class="text-xs font-medium text-zinc-400">1 / 1</span>
       <div class="flex items-center gap-2 shrink-0">
         <button type="button" data-lb-zoom aria-label="Zoom in" title="Zoom" class="inline-flex items-center justify-center w-9 h-9 rounded-md border border-white/15 bg-white/[0.04] hover:border-[#00E082] hover:text-[#00E082] text-zinc-200 transition cursor-pointer">
           ${ZOOM_IN_SVG}
@@ -80,7 +74,6 @@ export function createLightbox() {
         data-lb-attribution
         class="hidden h-10 items-center justify-center rounded-full border border-white/15 px-3 shadow-lg backdrop-blur-md"
       ></div>
-      <p class="ml-auto text-xs text-zinc-500">Click image to zoom · Arrow keys to browse</p>
     </div>
   `;
 
@@ -93,9 +86,6 @@ export function createLightbox() {
   const spinner = modal.querySelector('[data-lb-spinner]');
   const attributionBubble = modal.querySelector('[data-lb-attribution]');
   const counterEl = modal.querySelector('[data-lb-counter]');
-  const hdBadge = modal.querySelector('[data-lb-hd]');
-  const hdDot = modal.querySelector('[data-lb-hd-dot]');
-  const hdLabel = modal.querySelector('[data-lb-hd-label]');
   const zoomBtn = modal.querySelector('[data-lb-zoom]');
   const closeBtn = modal.querySelector('[data-lb-close]');
   const prevBtn = modal.querySelector('[data-lb-prev]');
@@ -200,32 +190,9 @@ export function createLightbox() {
     attributionBubble.classList.add('inline-flex');
   }
 
-  function setHdBadge(state) {
-    if (!hdBadge || !hdDot || !hdLabel) return;
-    if (state === 'loading') {
-      hdBadge.classList.remove('hidden');
-      hdBadge.classList.add('inline-flex');
-      hdDot.classList.add('animate-pulse');
-      hdLabel.textContent = 'Loading Full Res';
-      hdBadge.classList.remove('border-[#00E082]/35', 'text-[#00E082]');
-      hdBadge.classList.add('border-white/10', 'text-zinc-400');
-    } else if (state === 'ready') {
-      hdBadge.classList.remove('hidden');
-      hdBadge.classList.add('inline-flex');
-      hdDot.classList.remove('animate-pulse');
-      hdLabel.textContent = 'Full Res';
-      hdBadge.classList.remove('border-white/10', 'text-zinc-400');
-      hdBadge.classList.add('border-[#00E082]/35', 'text-[#00E082]');
-    } else {
-      hdBadge.classList.add('hidden');
-      hdBadge.classList.remove('inline-flex');
-    }
-  }
-
   async function upgradeToOriginal(slug, token) {
     if (!hasNativeOriginal(slug)) {
       upgradedSlugs.add(slug);
-      setHdBadge('ready');
       return;
     }
 
@@ -233,7 +200,6 @@ export function createLightbox() {
     if (token !== renderToken) return;
     if (!useWebp) {
       upgradedSlugs.add(slug);
-      setHdBadge('ready');
       return;
     }
 
@@ -245,12 +211,8 @@ export function createLightbox() {
       if (token !== renderToken) return;
       if (webpSource) webpSource.srcset = targetUrl;
       img.src = getOriginalUrl(slug);
-      setHdBadge('ready');
     };
-    master.onerror = () => {
-      if (token !== renderToken) return;
-      setHdBadge('hidden');
-    };
+    master.onerror = () => {};
     master.src = targetUrl;
   }
 
@@ -276,9 +238,7 @@ export function createLightbox() {
 
     if (alreadyFullRes) {
       upgradedSlugs.add(item.slug);
-      setHdBadge('ready');
     } else {
-      setHdBadge('loading');
       upgradeToOriginal(item.slug, token);
     }
   }
