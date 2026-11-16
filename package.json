@@ -1,0 +1,21 @@
+{
+  "name": "terpfocus-portfolio",
+  "version": "1.0.0",
+  "description": "Cannabis Photography Portfolio Site",
+  "main": "src/js/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "bugs": {
+    "url": "https://github.com/SoyMilkIsOk/terpfocus-portfolio/issues"
+  },
+  "homepage": "https://github.com/SoyMilkIsOk/terpfocus-portfolio#readme",
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.8"
+  }
+}
