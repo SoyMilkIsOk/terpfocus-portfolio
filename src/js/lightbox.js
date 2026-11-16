@@ -54,33 +54,27 @@ export function createLightbox() {
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
-      <div data-lb-stage class="lightbox-img-stage is-zoomable relative w-full h-full flex items-center justify-center p-3 sm:p-6">
+      <div data-lb-stage class="lightbox-img-stage is-zoomable relative w-full h-full flex items-center justify-center p-2 sm:p-5">
         <div data-lb-spinner class="absolute inset-0 flex items-center justify-center bg-black/60 z-10 pointer-events-none">
           <div class="w-7 h-7 rounded-full border-2 border-[#00E082]/25 border-t-[#00E082] animate-spin"></div>
         </div>
-        <picture class="contents">
-          <source data-lb-webp srcset="" type="image/webp" />
-          <img data-lb-img src="" alt="" decoding="async" class="max-h-full max-w-full w-auto h-auto object-contain rounded-lg select-none will-change-transform" draggable="false" />
-        </picture>
+        <img data-lb-img src="" alt="" decoding="async" class="shrink-0 max-h-full max-w-full w-auto h-auto object-contain rounded-lg select-none" draggable="false" />
       </div>
+
+      <div
+        data-lb-attribution
+        class="pointer-events-none hidden absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-30 h-10 items-center justify-center rounded-full border border-white/15 px-3 shadow-lg backdrop-blur-md"
+      ></div>
 
       <button type="button" data-lb-next aria-label="Next photo" title="Next" class="absolute right-2 sm:right-4 z-20 inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/70 hover:border-[#00E082] hover:text-[#00E082] text-white transition cursor-pointer">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-    </div>
-
-    <div class="relative z-30 flex items-center justify-between gap-4 border-t border-white/10 bg-[#050608]/90 px-4 py-3 sm:px-6 sm:py-4 min-h-[56px] shrink-0">
-      <div
-        data-lb-attribution
-        class="hidden h-10 items-center justify-center rounded-full border border-white/15 px-3 shadow-lg backdrop-blur-md"
-      ></div>
     </div>
   `;
 
   document.body.appendChild(modal);
 
   const img = modal.querySelector('[data-lb-img]');
-  const webpSource = modal.querySelector('[data-lb-webp]');
   const viewport = modal.querySelector('[data-lb-viewport]');
   const stage = modal.querySelector('[data-lb-stage]');
   const spinner = modal.querySelector('[data-lb-spinner]');
@@ -120,14 +114,16 @@ export function createLightbox() {
     const w = baseWidth || img.offsetWidth || vpRect.width;
     const h = baseHeight || img.offsetHeight || vpRect.height;
 
-    // Scale up enough so even square or tall crops fill the whole viewport between header & footer
+    // Expand layout box to full viewport cover scale so mobile rasterizes full native pixels cleanly
     const coverScale = w > 0 && h > 0 ? Math.max(vpRect.width / w, vpRect.height / h) : 2.2;
     const zoomScale = Math.max(2.15, coverScale * 1.12);
+    const zoomedW = Math.round(w * zoomScale);
+    const zoomedH = Math.round(h * zoomScale);
 
-    const overflowX = Math.max(0, (w * zoomScale - vpRect.width) / 2);
-    const overflowY = Math.max(0, (h * zoomScale - vpRect.height) / 2);
+    const overflowX = Math.max(0, (zoomedW - vpRect.width) / 2);
+    const overflowY = Math.max(0, (zoomedH - vpRect.height) / 2);
 
-    return { zoomScale, overflowX, overflowY };
+    return { zoomedW, zoomedH, overflowX, overflowY };
   }
 
   function applyZoomTransform(nx, ny, smooth = false) {
@@ -135,21 +131,29 @@ export function createLightbox() {
     panNormY = Math.max(0, Math.min(1, ny));
 
     img.style.transition = smooth
-      ? 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)'
+      ? 'transform 180ms cubic-bezier(0.22, 1, 0.36, 1)'
       : 'none';
 
     if (!isZoomed) {
+      img.style.width = '';
+      img.style.height = '';
+      img.style.maxWidth = '';
+      img.style.maxHeight = '';
       img.style.transformOrigin = 'center center';
-      img.style.transform = 'translate3d(0px, 0px, 0) scale(1)';
+      img.style.transform = 'translate3d(0px, 0px, 0)';
       return;
     }
 
-    const { zoomScale, overflowX, overflowY } = getZoomMetrics();
+    const { zoomedW, zoomedH, overflowX, overflowY } = getZoomMetrics();
     const tx = (0.5 - panNormX) * 2 * overflowX;
     const ty = (0.5 - panNormY) * 2 * overflowY;
 
+    img.style.width = `${zoomedW}px`;
+    img.style.height = `${zoomedH}px`;
+    img.style.maxWidth = 'none';
+    img.style.maxHeight = 'none';
     img.style.transformOrigin = 'center center';
-    img.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) scale(${zoomScale.toFixed(3)})`;
+    img.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0)`;
   }
 
   function setZoom(zoomed, nx = 0.5, ny = 0.5) {
@@ -158,12 +162,16 @@ export function createLightbox() {
     }
     isZoomed = zoomed;
     img.classList.toggle('rounded-lg', !zoomed);
+    img.classList.toggle('max-h-full', !zoomed);
+    img.classList.toggle('max-w-full', !zoomed);
+    stage.classList.toggle('p-2', !zoomed);
+    stage.classList.toggle('sm:p-5', !zoomed);
     stage.classList.toggle('is-zoomed', zoomed);
     stage.classList.toggle('is-zoomable', !zoomed);
     stage.classList.toggle('touch-none', zoomed);
     zoomBtn.innerHTML = zoomed ? ZOOM_OUT_SVG : ZOOM_IN_SVG;
     zoomBtn.setAttribute('aria-label', zoomed ? 'Zoom out' : 'Zoom in');
-    applyZoomTransform(nx, ny, true);
+    applyZoomTransform(nx, ny, false);
   }
 
   function renderAttributionBubble(brandId) {
@@ -209,14 +217,13 @@ export function createLightbox() {
     master.onload = () => {
       upgradedSlugs.add(slug);
       if (token !== renderToken) return;
-      if (webpSource) webpSource.srcset = targetUrl;
-      img.src = getOriginalUrl(slug);
+      img.src = targetUrl;
     };
     master.onerror = () => {};
     master.src = targetUrl;
   }
 
-  function render() {
+  async function render() {
     if (!items.length) return;
     const item = items[index];
     const token = ++renderToken;
@@ -225,18 +232,23 @@ export function createLightbox() {
     setZoom(false, 0.5, 0.5);
     spinner.classList.remove('hidden');
 
-    const alreadyFullRes = upgradedSlugs.has(item.slug) || !hasNativeOriginal(item.slug);
-    if (webpSource) {
-      webpSource.srcset = alreadyFullRes
-        ? getOriginalWebpUrl(item.slug)
-        : getFullWebpUrl(item.slug);
-    }
-    img.src = alreadyFullRes ? getOriginalUrl(item.slug) : getFullUrl(item.slug);
-    img.alt = item.brandId ? getBrandById(item.brandId)?.name || 'Gallery photo' : 'Gallery photo';
     renderAttributionBubble(item.brandId);
     counterEl.textContent = `${index + 1} / ${items.length}`;
 
-    if (alreadyFullRes) {
+    const useWebp = await supportsWebp();
+    if (token !== renderToken) return;
+
+    const alreadyFullRes = upgradedSlugs.has(item.slug) || !hasNativeOriginal(item.slug);
+    const initialUrl = useWebp
+      ? alreadyFullRes
+        ? getOriginalWebpUrl(item.slug)
+        : getFullWebpUrl(item.slug)
+      : getOriginalUrl(item.slug);
+
+    img.src = initialUrl;
+    img.alt = item.brandId ? getBrandById(item.brandId)?.name || 'Gallery photo' : 'Gallery photo';
+
+    if (alreadyFullRes || !useWebp) {
       upgradedSlugs.add(item.slug);
     } else {
       upgradeToOriginal(item.slug, token);
@@ -272,7 +284,6 @@ export function createLightbox() {
     setTimeout(() => {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
-      if (webpSource) webpSource.srcset = '';
       img.src = '';
     }, 180);
   }
